@@ -445,15 +445,18 @@ angular.module('todoApp', [])
      }
      
      // Create the flipbook
-     let height = ($(window).width() - 50) / 2 / 0.72;
+     let width = $(window).width() - 50;
+     let height = ($(window).width()) / 2 / 0.72;
+
      if ($scope.view_mode == 'mobile') {
-      height = ($(window).width() - 50) / 0.72
+      width = $(window).width();
+      height = ($(window).width()) / 0.72;
      }
      flipbook.turn({
          
          // Magazine width
    
-         width: $(window).width() - 50,
+         width: width,
    
          // Magazine height
    
