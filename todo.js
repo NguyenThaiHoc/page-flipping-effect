@@ -406,6 +406,16 @@ angular.module('todoApp', [])
       
     }
 
+    $scope.next = function() {
+      $('.magazine').turn('next');
+      $scope.current_page = $(".magazine").turn("page");
+    }
+
+    $scope.previous = function() {
+      $('.magazine').turn('previous');
+      $scope.current_page = $(".magazine").turn("page");
+    }
+
 
     $scope.getStyle = function(button) {
       if (button.x && button.y) {
@@ -771,7 +781,7 @@ function loadPage(page, pageElement) {
 
   if (page.content) {
     for (let i = 0; i < page.content.btns.length; i++) {
-      var link = $('<a class="button-link"><i class="fa fa-external-link" aria-hidden="true"></i></a>');
+      var link = $('<a class="button-link" target="_blank"><i class="fa fa-external-link" aria-hidden="true"></i></a>');
       link.attr('href', page.content.btns[i].url);
       link.css({
         left: page.content.btns[i].x,
