@@ -423,7 +423,7 @@ angular.module('todoApp', [])
       if ($location.search().page) {
         if ($scope.current_page != $location.search().page) {
           $scope.current_page = parseInt($location.search().page);
-          if ($scope.loaded.includes($scope.current_page)) {
+          if ($scope.loaded.includes($scope.current_page) && $scope.current_page % 2 == 0) {
             $('.magazine').turn('page', $scope.current_page);
           } else {
             $window.location.reload();
@@ -516,9 +516,9 @@ angular.module('todoApp', [])
                $(this).turn('peel', 'br');
              }
              let current_page = page;
-             if ($scope.view_mode == 'laptop') {
-               if (current_page % 2 == 1 && current_page != 1) current_page--;
-             }
+            //  if ($scope.view_mode == 'laptop') {
+            //    if (current_page % 2 == 1 && current_page != 1) current_page--;
+            //  }
              $scope.current_page = current_page;
               
               $location.search({'page': current_page});
