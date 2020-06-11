@@ -16,40 +16,87 @@
     <link href="./css/font-awesome.min.css" rel="stylesheet">
   </head>
   <body ng-controller="EditBookController">
-    <div id="controls">
-      <a id="previous" class="previous" href="javascript:void(0)" ng-click="previous()" 
-      ng-disabled="{{ current_page == 1 }}">Trang trước</a>
-      <a id="next" class="next" href="javascript:void(0)" ng-click="next()" 
-      ng-disabled="{{ current_page < (total_page - 1) }}">Trang sau</a>
-      <input type="text" ng-model="link"  size="30"
-            placeholder="Thêm url">
-      <!-- <input type="text" ng-model="content.backgroundUrl"  size="30"
-            placeholder="Thêm backgroundUrl"> -->
-      <input type="submit" value="Thêm nút" ng-click="addButton()">
-      <button ng-click="save()">Lưu</button>
+    <div style="display: flex;">
+      <div class="inline-block" style="width: 30%;">
+        <div id="controls" style="margin-top: 45px;" ng-if="current_page_data">
+          <input type="text" ng-model="current_page_data.content.url"  size="30" placeholder="url">
+          <ul>
+            <li ng-repeat="event in current_page_data.content.btns track by $index">
+              <div>
+                {{ $index }}
+                <span ng-click="deleteBtn($index)" style="cursor: pointer; color: red">Xóa</span>
+              </div>
+              <ul>
+                <li> <div>
+                  url: <input type="text" ng-model="event.url"  size="30" placeholder="url">
+                </div>
+                <div>
+                  Tọa độ x: <input type="text" ng-model="event.x"  size="30" placeholder="x">
+                </div>
+                <div>
+                  Tọa độ y: <input type="text" ng-model="event.y"  size="30" placeholder="y">
+                </div></li>
+                
+              </ul>
+            </li>
+            <li>
+              <div>
+                <span ng-click="addButton()" style="cursor: pointer; color: green">Thêm</span>
+              </div>
+              
+            </li>
+          </ul>
+          <button ng-click="save()" style="margin-top: 30px;">Lưu</button>
+          
+          <div style="margin-top: 50px;">
+            <a id="previous" class="previous" href="javascript:void(0)" ng-click="previous()" 
+            ng-disabled="{{ current_page == 1 }}">Trang trước</a>
+            <a id="next" class="next" href="javascript:void(0)" ng-click="next()" 
+            ng-disabled="{{ current_page < (total_page - 1) }}">Trang sau</a>
+          </div>
+        </div></div>
+      <div class="inline-block" style="width: 70%;">
+        <div class="page-wrapper" 
+        oncontextmenu="return false;"
+        page="1" style="position: relative; 
+          width: 650px; height: 900px; 
+          top: 30px; right: auto; left: 0px; z-index: 3;">
+        <div id="edit-book" class="page p1 odd" 
+          style="background: white; float: left; 
+            width: 650px; height: 900px; 
+            position: absolute; top: 0px; 
+            left: 0px; bottom: auto; right: 0px; 
+            transform-origin: 0% 0%;
+            overflow: hidden;">
+          <img class="size-img-one-page" ng-src="{{current_page_data.content.url}}" imageonload>
+          <div class="loader"></div>
+            <ng-container ng-repeat="event in current_page_data.content.btns track by $index">
+              <a ng-mousedown="startDrag($event, $index)" 
+                id="dragtarget_{{$index}}"
+                ng-style="{{getStyle(event)}}"
+                href="javascript:void(0)"
+                class="button-link"
+                >
+                <i class="fa fa-external-link" aria-hidden="true"></i>
+            </a>
+            <div class='custom-menu'
+              id="contextmenu_{{$index}}"
+              ng-click="deleteBtn($index)"
+              ng-mouseleave="hideBtn()"
+              ng-hide="current_delete_index != $index">Xóa
+            </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="page-wrapper" 
-      oncontextmenu="return false;"
-      page="1" style=" margin: auto;position: relative; overflow: hidden; width: 650px; height: 900px; top: 30px; right: auto; left: 0px; z-index: 3;"><div style="position: absolute; top: 0px; left: 0px; overflow: hidden; z-index: auto; width: 1110px; height: 1110px;">
-      <div id="edit-book" class="page p1 odd" style="background: white; float: left; width: 650px; height: 900px; position: absolute; top: 0px; left: 0px; bottom: auto; right: 0px; transform-origin: 0% 0%;">
-      <img class="size-img-one-page" ng-src="{{content.url}}" imageonload>
-      <div class="loader"></div>
-      <ng-container ng-repeat="event in btns track by $index">
-        <a ng-mousedown="startDrag($event, $index)" 
-          id="dragtarget_{{$index}}"
-          ng-style="{{getStyle(event)}}"
-          href="javascript:void(0)"
-          class="button-link"
-          >
-          <i class="fa fa-external-link" aria-hidden="true"></i>
-      </a>
-      <div class='custom-menu'
-        id="contextmenu_{{$index}}"
-        ng-click="deleteBtn($index)"
-        ng-mouseleave="hideBtn()"
-        ng-hide="current_delete_index != $index">Xóa</div>
-      </ng-container>
-    </div>
+
+
+
+
+
+    
+    
     
     
   

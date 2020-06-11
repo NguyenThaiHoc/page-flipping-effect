@@ -9,6 +9,7 @@ angular.module('todoApp', [])
     $scope.content;
     $scope.pages = [];
     $scope.total_page = 0;
+    $scope.link;
 
     $scope.getData = function () {
       $http.get("https://trainghiem.sachmem.vn/api/pages?book_id=82")
@@ -27,9 +28,6 @@ angular.module('todoApp', [])
                   $scope.current_page_data.content = JSON.parse($scope.current_page_data.content);
                 }
               }
-  
-              $scope.content = $scope.current_page_data.content;
-              $scope.btns = $scope.content.btns;
             }
           })
          
@@ -62,6 +60,11 @@ angular.module('todoApp', [])
 
         $scope.current_button_position_x = left;
         $scope.current_button_position_y = top;
+
+        $scope.current_page_data.content.btns[$scope.current_button_index].x = left;
+        $scope.current_page_data.content.btns[$scope.current_button_index].y = top;
+
+        $scope.$apply()
       }
     });
     $( document ).on( "mouseup", function( e ) {
@@ -69,41 +72,27 @@ angular.module('todoApp', [])
         $scope.current_button_id = null;
         $scope.offset_x = 0;
         $scope.offset_y = 0;
-        $scope.btns[$scope.current_button_index].x = $scope.current_button_position_x
-        $scope.btns[$scope.current_button_index].y = $scope.current_button_position_y;
+        $scope.current_page_data.content.btns[$scope.current_button_index].x = $scope.current_button_position_x;
+        $scope.current_page_data.content.btns[$scope.current_button_index].y = $scope.current_button_position_y;
+
+        $scope.current_page_data.content.btns[$scope.current_button_index].x = $scope.current_button_position_x;
+        $scope.current_page_data.content.btns[$scope.current_button_index].y = $scope.current_button_position_y;
+
+        $scope.$apply();
         $scope.current_button_index = null;
       }
     });
 
-    // $( document ).on( "mousedown", function( e ) {
-    //   if (e.which == 1) {
-    //     if ($scope.current_delete_index == 0 || $scope.current_delete_index) {
-    //       $('#contextmenu_'+ $scope.current_delete_index).hover(function(){ 
-    //       }, function(){ 
-    //         $scope.current_delete_index = null;
-    //         $scope.$apply()
-    //       });
-    //     }
-        
-    
-    //     // $("body").mouseup(function(){ 
-    //     //     if(! mouse_is_inside) $('.form_wrapper').hide();
-    //     // });
-        
-    //   }
-     
-    // });
-
-    $scope.link = ""
     $scope.hideBtn = function() {
       $scope.current_delete_index = null;
     }
     $scope.addButton = function() {
-      $scope.btns.push({text: 'test', x: "0%", y: "0%", url: $scope.link});
+      $scope.current_page_data.content.btns.push({text: 'test', x: "0%", y: "0%", url: $scope.link});
+      console.log($scope.link)
     };
 
     $scope.deleteBtn = function(index) {
-      $scope.btns.splice(index, 1);
+      $scope.current_page_data.content.btns.splice(index, 1);
     }
 
     $scope.startDrag = function(event, index) {
@@ -160,15 +149,16 @@ angular.module('todoApp', [])
     }
 
     $scope.save = function() {
-      $scope.content.btns = $scope.btns;
-      $scope.current_page_data.content = JSON.stringify($scope.content);
-      $http.put("https://trainghiem.sachmem.vn/api/pages/" + $scope.current_page_data.id, $scope.current_page_data)
+      
+      let data = JSON.parse(JSON.stringify($scope.current_page_data));
+      data.content = JSON.stringify(data.content);
+      $http.put("https://trainghiem.sachmem.vn/api/pages/" + data.id, data)
       .then(function(res) {
         toastr.options = {
-          timeOut: 0,
+          timeOut: 2000,
           preventDuplicates: false
           };
-        toastr.clear()
+        toastr.clear();
         if (res.data.code == 1) {
           toastr.success("Lưu thành công", "Thông báo")
         } else {
@@ -287,7 +277,7 @@ angular.module('todoApp', [])
     $scope.link = ""
  
     $scope.addButton = function() {
-      $scope.btns.push({text: 'test', x: "0%", y: "0%", url: $scope.link});
+      $scope.btns.push({x: "0%", y: "0%", url: $scope.link});
     };
 
     $scope.startDrag = function(event, index) {
