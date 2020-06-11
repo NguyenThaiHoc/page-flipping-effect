@@ -524,6 +524,7 @@ angular.module('todoApp', [])
               } else {
                 if ($scope.unloaded.indexOf(pages[i]) < 0) {
                   $scope.unloaded.push(pages[i]);
+                  
                 }
               }
              }
@@ -532,7 +533,10 @@ angular.module('todoApp', [])
    
      });
      $('.magazine').turn('page', $scope.current_page);
-     if ($scope.view_mode == 'mobile') $(".magazine").turn("display", "single");
+
+     setTimeout(function(){
+      if ($scope.view_mode == 'mobile') $(".magazine").turn("display", "single");
+     }, 0)
    
      // Zoom.js
    
@@ -745,7 +749,7 @@ function addPage(page, book, index) {
 	// Create a new element for this page
 	var element = $('<div />', {});
 
-	// Add the page to the flipbook
+  // Add the page to the flipbook
 	if (book.turn('addPage', element, index)) {
 		// Add the initial HTML
 		// It will contain a loader indicator and a gradient
