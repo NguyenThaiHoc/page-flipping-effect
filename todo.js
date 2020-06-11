@@ -4,6 +4,7 @@ angular.module('todoApp', [])
     $scope.current_page = 1;
     $scope.btns = [];
     $scope.current_button_index;
+    $scope.current_delete_index;
     $scope.current_page_data;
     $scope.content;
     $scope.pages = [];
@@ -74,23 +75,61 @@ angular.module('todoApp', [])
       }
     });
 
+    // $( document ).on( "mousedown", function( e ) {
+    //   if (e.which == 1) {
+    //     if ($scope.current_delete_index == 0 || $scope.current_delete_index) {
+    //       $('#contextmenu_'+ $scope.current_delete_index).hover(function(){ 
+    //       }, function(){ 
+    //         $scope.current_delete_index = null;
+    //         $scope.$apply()
+    //       });
+    //     }
+        
+    
+    //     // $("body").mouseup(function(){ 
+    //     //     if(! mouse_is_inside) $('.form_wrapper').hide();
+    //     // });
+        
+    //   }
+     
+    // });
+
     $scope.link = ""
- 
+    $scope.hideBtn = function() {
+      $scope.current_delete_index = null;
+    }
     $scope.addButton = function() {
       $scope.btns.push({text: 'test', x: "0%", y: "0%", url: $scope.link});
     };
 
+    $scope.deleteBtn = function(index) {
+      $scope.btns.splice(index, 1);
+    }
+
     $scope.startDrag = function(event, index) {
       event.preventDefault();
-      $scope.current_button_index = index;
-      $scope.current_button_id = "#dragtarget_" + index.toString();
-      $($scope.current_button_id).css('position', 'absolute')
+      if (event.which == 1) {
+        
+        $scope.current_button_index = index;
+        $scope.current_button_id = "#dragtarget_" + index.toString();
+        $($scope.current_button_id).css('position', 'absolute')
+  
+        var position_of_button = $($scope.current_button_id)[0].getBoundingClientRect();
+  
+        $scope.offset_x = event.clientX - position_of_button.left;
+        $scope.offset_y = event.clientY - position_of_button.top;
+      } else {
+       $scope.current_delete_index = index;
+       let id = '#contextmenu_' + index.toString()
+       let bound = document.getElementById("edit-book").getBoundingClientRect();
+       let left = ((event).pageX - bound.left - $scope.offset_x) / bound.width * 100 + "%";
+       let top = ((event.pageY - bound.top - $scope.offset_y) / bound.height * 100) + "%";
 
-      var position_of_button = $($scope.current_button_id)[0].getBoundingClientRect();
-
-      $scope.offset_x = event.clientX - position_of_button.left;
-      $scope.offset_y = event.clientY - position_of_button.top;
-
+       $(id).css({ 
+        left: left,
+        top: top,
+      })
+      }
     }
 
     $scope.getStyle = function(button) {
@@ -108,12 +147,14 @@ angular.module('todoApp', [])
 
     $scope.previous = function() {
       $scope.current_page--;
+      $scope.btns = [];
       $location.search({'page': $scope.current_page})
       $scope.getData();
     }
 
     $scope.next = function() {
       $scope.current_page++;
+      $scope.btns = [];
       $location.search({'page': $scope.current_page})
       $scope.getData();
     }
@@ -341,10 +382,9 @@ angular.module('todoApp', [])
       }
     });
 
-    $scope.getData = function(i, book) {
-      if (i < $scope.unloaded.length) {
-        
-        $http.get("https://trainghiem.sachmem.vn/api/pages/" + $scope.unloaded[i] + "?book_id=82")
+    $scope.getData = function(book) {
+      if ($scope.unloaded.length) {
+        $http.get("https://trainghiem.sachmem.vn/api/pages/" + $scope.unloaded[0] + "?book_id=82")
         .then(function(res) {
           if (res.data.code == 1) {
 
@@ -358,27 +398,24 @@ angular.module('todoApp', [])
               if (index !== -1) $scope.unloaded.splice(index, 1);
             }
 
-            i++;
-            $scope.getData(i, book);
+            $scope.getData(book);
           }
           
         })
-      } else {
-        $scope.first_time_load = true;
       }
       
     }
 
-    $(".magazine").bind("turned", function(event, pageObject, corner) {
-      $scope.time_turned_page++;
-      if ($scope.time_turned_page > 1) {
-        if (pageObject) $scope.current_page = $(".magazine").turn("page");
-        $location.search({'page': $scope.current_page});
-        $scope.$apply()
-      }
-    });
+    $scope.next = function() {
+      $('.magazine').turn('next');
+      $scope.current_page = $(".magazine").turn("page");
+    }
 
-    
+    $scope.previous = function() {
+      $('.magazine').turn('previous');
+      $scope.current_page = $(".magazine").turn("page");
+    }
+
 
     $scope.getStyle = function(button) {
       if (button.x && button.y) {
@@ -456,6 +493,7 @@ angular.module('todoApp', [])
             //  currentPage = book.turn('page');
             //  pages = book.turn('pages');
             var book = $(this);
+
               // var range = book.turn("range", page);
               //   for (var i = range[0]; i<=range[1]; i++){
               //   if (!book.turn("hasPage", i)) {
@@ -471,18 +509,11 @@ angular.module('todoApp', [])
              if (page==1) { 
                $(this).turn('peel', 'br');
              }
-
-             
-            //  if ($scope.first_time_load) {
-            //   for (var i = range[0]; i<=range[1]; i++){
-            //     if (!book.turn("hasPage", i)) {
-            //       $scope.unloaded.push(i)
-            //     }
-            //   }
-            //  }
+             $scope.current_page = page;
               
-            //   console.log($scope.unloaded)
-            //   if ($scope.unloaded.length) $scope.getData(0, $(this));
+              $location.search({'page': page});
+              $scope.$apply();
+              $scope.getData($(this));
            },
    
            missing: function (event, pages) {
@@ -491,14 +522,11 @@ angular.module('todoApp', [])
               if ($scope.data[pages[i] - 1]) {
                 addPage($scope.data[pages[i] - 1], $(this), pages[i]);
               } else {
-                $scope.unloaded.push(pages[i])
+                if ($scope.unloaded.indexOf(pages[i]) < 0) {
+                  $scope.unloaded.push(pages[i]);
+                }
               }
              }
-             $scope.getData(0, $(this));
-            //  if (!$scope.first_time_load) {
-            //   console.log("asdasd")
-            //   $scope.getData(0, $(this));
-            //  }
            }
          }
    
@@ -753,7 +781,7 @@ function loadPage(page, pageElement) {
 
   if (page.content) {
     for (let i = 0; i < page.content.btns.length; i++) {
-      var link = $('<a class="button-link"><i class="fa fa-external-link" aria-hidden="true"></i></a>');
+      var link = $('<a class="button-link" target="_blank"><i class="fa fa-external-link" aria-hidden="true"></i></a>');
       link.attr('href', page.content.btns[i].url);
       link.css({
         left: page.content.btns[i].x,
