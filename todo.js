@@ -338,7 +338,7 @@ angular.module('todoApp', [])
       });
     }
 
-  }).controller('BookController', function($scope, $http, $timeout, $location) {
+  }).controller('BookController', function($scope, $http, $timeout, $location, $window) {
     $scope.btns = [];
     $scope.total_page = 0;
     $scope.current_button_index;
@@ -352,6 +352,7 @@ angular.module('todoApp', [])
     $scope.in_progress_loading = [];
     $scope.unloaded = [];
     $scope.first_time_load = false;
+
 
     if ($location.search().page) {
       $scope.current_page = $location.search().page;
@@ -393,7 +394,7 @@ angular.module('todoApp', [])
               data_page = res.data.data[i];
               data_page.content = JSON.parse(data_page.content);
               addPage(data_page, book, res.data.data[i].page_number);
-
+              $scope.loaded.push(res.data.data[i].page_number);
               var index = $scope.unloaded.indexOf(res.data.data[i].page_number);
               if (index !== -1) $scope.unloaded.splice(index, 1);
             }
@@ -427,9 +428,21 @@ angular.module('todoApp', [])
         }
       } else return { 'z-index': 1 };
     }
-    $scope.goToPage = function(page) {
-      $('.magazine').turn('page', page);
-    }
+
+    $scope.$on('$locationChangeSuccess', function(event, newUrl, oldUrl){
+      if ($location.search().page) {
+        if ($scope.current_page != $location.search().page) {
+          $scope.current_page = parseInt($location.search().page);
+          if ($scope.loaded.includes($scope.current_page)) {
+            $('.magazine').turn('page', $scope.current_page);
+          } else {
+            $window.location.reload();
+          }
+        }
+      }
+      
+  });
+
 
     $scope.loadApp = function() {
 
@@ -445,15 +458,18 @@ angular.module('todoApp', [])
      }
      
      // Create the flipbook
-     let height = ($(window).width() - 50) / 2 / 0.72;
+     let width = $(window).width() - 50;
+     let height = ($(window).width()) / 2 / 0.72;
+
      if ($scope.view_mode == 'mobile') {
-      height = ($(window).width() - 50) / 0.72
+      width = $(window).width();
+      height = ($(window).width()) / 0.72;
      }
      flipbook.turn({
          
          // Magazine width
    
-         width: $(window).width() - 50,
+         width: width,
    
          // Magazine height
    
@@ -509,10 +525,16 @@ angular.module('todoApp', [])
              if (page==1) { 
                $(this).turn('peel', 'br');
              }
-             $scope.current_page = page;
+             let current_page = page;
+             if ($scope.view_mode == 'laptop') {
+               if (current_page % 2 == 1 && current_page != 1) current_page--;
+             }
+             $scope.current_page = current_page;
               
-              $location.search({'page': page});
-              $scope.$apply();
+              $location.search({'page': current_page});
+              $timeout(function(){
+                $scope.$apply();
+             },0)
               $scope.getData($(this));
            },
    
