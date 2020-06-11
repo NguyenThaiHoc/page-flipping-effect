@@ -28,7 +28,9 @@
       <input type="submit" value="Thêm nút" ng-click="addButton()">
       <button ng-click="save()">Lưu</button>
     </div>
-    <div class="page-wrapper" page="1" style=" margin: auto;position: relative; overflow: hidden; width: 650px; height: 900px; top: 30px; right: auto; left: 0px; z-index: 3;"><div style="position: absolute; top: 0px; left: 0px; overflow: hidden; z-index: auto; width: 1110px; height: 1110px;">
+    <div class="page-wrapper" 
+      oncontextmenu="return false;"
+      page="1" style=" margin: auto;position: relative; overflow: hidden; width: 650px; height: 900px; top: 30px; right: auto; left: 0px; z-index: 3;"><div style="position: absolute; top: 0px; left: 0px; overflow: hidden; z-index: auto; width: 1110px; height: 1110px;">
       <div id="edit-book" class="page p1 odd" style="background: white; float: left; width: 650px; height: 900px; position: absolute; top: 0px; left: 0px; bottom: auto; right: 0px; transform-origin: 0% 0%;">
       <img class="size-img-one-page" ng-src="{{content.url}}" imageonload>
       <div class="loader"></div>
@@ -37,9 +39,15 @@
           id="dragtarget_{{$index}}"
           ng-style="{{getStyle(event)}}"
           href="javascript:void(0)"
-          class="button-link">
+          class="button-link"
+          >
           <i class="fa fa-external-link" aria-hidden="true"></i>
       </a>
+      <div class='custom-menu'
+        id="contextmenu_{{$index}}"
+        ng-click="deleteBtn($index)"
+        ng-mouseleave="hideBtn()"
+        ng-hide="current_delete_index != $index">Xóa</div>
       </ng-container>
     </div>
     
