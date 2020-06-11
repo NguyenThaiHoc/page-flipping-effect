@@ -423,7 +423,7 @@ angular.module('todoApp', [])
       if ($location.search().page) {
         if ($scope.current_page != $location.search().page) {
           $scope.current_page = parseInt($location.search().page);
-          if ($scope.loaded.includes($scope.current_page) && $scope.current_page % 2 == 0) {
+          if ($scope.loaded.includes($scope.current_page)) {
             $('.magazine').turn('page', $scope.current_page);
           } else {
             $window.location.reload();
@@ -516,9 +516,6 @@ angular.module('todoApp', [])
                $(this).turn('peel', 'br');
              }
              let current_page = page;
-            //  if ($scope.view_mode == 'laptop') {
-            //    if (current_page % 2 == 1 && current_page != 1) current_page--;
-            //  }
              $scope.current_page = current_page;
               
               $location.search({'page': current_page});
@@ -797,7 +794,7 @@ function loadPage(page, pageElement) {
 
   if (page.content) {
     for (let i = 0; i < page.content.btns.length; i++) {
-      var link = $('<a class="button-link" target="_blank"><i class="fa fa-external-link" aria-hidden="true"></i></a>');
+      var link = $('<a class="button-link"><i class="fa fa-external-link" aria-hidden="true"></i></a>');
       link.attr('href', page.content.btns[i].url);
       link.css({
         left: page.content.btns[i].x,
