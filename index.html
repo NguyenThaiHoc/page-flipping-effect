@@ -1,0 +1,72 @@
+<html ng-app="todoApp" ng-init="view_mode = 'laptop'">
+<!--[if lt IE 7 ]> <html lang="en" class="ie6"> <![endif]-->
+<!--[if IE 7 ]>    <html lang="en" class="ie7"> <![endif]-->
+<!--[if IE 8 ]>    <html lang="en" class="ie8"> <![endif]-->
+<!--[if IE 9 ]>    <html lang="en" class="ie9"> <![endif]-->
+<!--[if !IE]><!--> <html lang="en"> <!--<![endif]-->
+<head>
+<script type="text/javascript" src="./extras/jquery.min.1.7.js"></script>
+<script type="text/javascript" src="./extras/modernizr.2.5.3.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.9/angular.min.js"></script>
+<script src="todo.js"></script>
+<script src="./lib/zoom.min.js"></script>
+<link href="./css/font-awesome.min.css" rel="stylesheet">
+
+</head>
+<body ng-controller="BookController">
+
+<div id="canvas">
+
+<div class="magazine-viewport">
+	<div class="container">
+		<div class="magazine">
+			<!-- Next button -->
+			<div ignore="1" class="next-button"></div>
+			<!-- Previous button -->
+			<div ignore="1" class="previous-button"></div>
+
+			<!-- <ng-container ng-repeat="page in pages track by $index">
+				<div class="gradient"></div>
+				<img ng-src="{{page.content.backgroundUrl}}"
+					id="img_{{$index}}"
+					style="width: 100%; height: 100%;" imageonload>
+				<div class="loader"></div>
+				<ng-container >
+          <ng-container ng-repeat="event in page.content.events">
+						<a 	id="dragtarget_{{$index}}"
+								ng-style="{{getStyle(event)}}"
+								ng-if="event.x && event.y"
+								href="{{ event.url }}"
+								class="button-link">
+								<i class="fa fa-external-link" aria-hidden="true"></i>
+						</a>
+          </ng-container>
+        </ng-container>
+			</ng-container> -->
+		</div>
+	</div>
+</div>
+
+
+
+</div>
+
+<ng-container ng-repeat="page in pages track by $index">
+	<img ng-src="{{page.content.backgroundUrl}}" style="display: none;" 
+					id="img_{{$index}}">
+</ng-container>
+
+<script type="text/javascript">
+
+yepnope({
+	test : Modernizr.csstransforms,
+	yep: ['./lib/turn.js'],
+	nope: ['./lib/turn.html4.min.js'],
+	both: ['css/magazine.css'],
+	// complete: loadApp
+});
+
+</script>
+
+</body>
+</html>

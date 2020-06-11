@@ -1,0 +1,49 @@
+<!doctype html>
+<html ng-app="todoApp" xmlns="http://www.w3.org/1999/xhtml" lang="vi" xml:lang="vi">
+
+  <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.9/angular.min.js"></script>
+
+    <!-- <script src="turn.min.js"></script> -->
+    <script src="todo.js"></script>
+    <script src="toastr.js"></script>
+    <meta charset="UTF-8">
+
+    <link rel="stylesheet" href="view_one_page.css">
+    <link rel="stylesheet" href="toastr.css">
+    <link href="./css/font-awesome.min.css" rel="stylesheet">
+  </head>
+  <body ng-controller="EditBookController">
+    <div id="controls">
+      <a id="previous" class="previous" href="javascript:void(0)" ng-click="previous()" 
+      ng-disabled="{{ current_page == 1 }}">Trang trước</a>
+      <a id="next" class="next" href="javascript:void(0)" ng-click="next()" 
+      ng-disabled="{{ current_page < (total_page - 1) }}">Trang sau</a>
+      <input type="text" ng-model="link"  size="30"
+            placeholder="Thêm url">
+      <!-- <input type="text" ng-model="content.backgroundUrl"  size="30"
+            placeholder="Thêm backgroundUrl"> -->
+      <input type="submit" value="Thêm nút" ng-click="addButton()">
+      <button ng-click="save()">Lưu</button>
+    </div>
+    <div class="page-wrapper" page="1" style=" margin: auto;position: relative; overflow: hidden; width: 650px; height: 900px; top: 30px; right: auto; left: 0px; z-index: 3;"><div style="position: absolute; top: 0px; left: 0px; overflow: hidden; z-index: auto; width: 1110px; height: 1110px;">
+      <div id="edit-book" class="page p1 odd" style="background: white; float: left; width: 650px; height: 900px; position: absolute; top: 0px; left: 0px; bottom: auto; right: 0px; transform-origin: 0% 0%;">
+      <img class="size-img-one-page" ng-src="{{content.url}}" imageonload>
+      <div class="loader"></div>
+      <ng-container ng-repeat="event in btns track by $index">
+        <a ng-mousedown="startDrag($event, $index)" 
+          id="dragtarget_{{$index}}"
+          ng-style="{{getStyle(event)}}"
+          href="javascript:void(0)"
+          class="button-link">
+          <i class="fa fa-external-link" aria-hidden="true"></i>
+      </a>
+      </ng-container>
+    </div>
+    
+    
+  
+  </body>
+</html>

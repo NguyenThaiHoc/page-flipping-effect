@@ -1,0 +1,91 @@
+<html ng-app="todoApp" >
+<!--[if lt IE 7 ]> <html lang="en" class="ie6"> <![endif]-->
+<!--[if IE 7 ]>    <html lang="en" class="ie7"> <![endif]-->
+<!--[if IE 8 ]>    <html lang="en" class="ie8"> <![endif]-->
+<!--[if IE 9 ]>    <html lang="en" class="ie9"> <![endif]-->
+<!--[if !IE]><!--> <html lang="en"> <!--<![endif]-->
+<head>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<script type="text/javascript" src="./extras/jquery.min.1.7.js"></script>
+<script type="text/javascript" src="./extras/modernizr.2.5.3.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.9/angular.min.js"></script>
+<script src="todo.js"></script>
+<script src="./lib/zoom.min.js"></script>
+<link href="./css/font-awesome.min.css" rel="stylesheet">
+<!-- <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous"> -->
+
+</head>
+<body ng-controller="BookController" ng-init="view_mode = 'mobile'">
+
+<div id="canvas">
+
+<div class="magazine-viewport">
+	<div class="container">
+    
+    <a class="previous" href="javascript:void(0)" ng-click="previous()" 
+    style="position: fixed; bottom: 0px; left: 0px; z-index: 11111;"
+      ng-if="current_page > 1">&laquo; <Table>Trang trước</Table></a>
+    <a class="next" href="javascript:void(0)" ng-click="next()" 
+    style="position: fixed; bottom: 0px; right: 0px; z-index: 11111;"
+    ng-if="current_page < (total_page - 1)">Trang sau &raquo;</a>
+		<div class="magazine">
+			<!-- Previous button -->
+			<!-- <div ignore="1" class="previous-button"></div>
+			<ng-container ng-repeat="page in pages track by $index">
+        <div class="gradient"></div>
+      <div class="next-button next-button-down"></div>
+        
+        <img ng-src="{{page.content.backgroundUrl}}" style="width: 100%; height: 100%;" imageonload>
+				<div class="loader"></div>
+				<ng-container ng-if="((current_page == ($index + 1) && current_page == 1)) || 
+          (current_page % 2 == 0 && ($index == current_page || current_page == $index +1) ||
+          (current_page % 2 == 1 && ($index + 2  == current_page || current_page == $index + 1)))">
+          <ng-container ng-repeat="event in page.content.events">
+            <a id="dragtarget_{{$index}}"
+								ng-style="{{getStyle(event)}}"
+								ng-if="event.x && event.y"
+								href="{{ event.url }}"
+								target="_blank"
+								class="button-link">
+						  <i class="fa fa-external-link" aria-hidden="true"></i>
+						</a>
+          </ng-container>
+        </ng-container>
+       
+			</ng-container> -->
+    </div>
+    <!-- <a href="javascript:void(0)" class="previous" style="position: fixed; bottom: 0px; left: 0px; z-index: 11111;"
+    ng-click="next()" >
+    &laquo; Previous</a>
+  <a href="javascript:void(0)" class="next" style="position: fixed; bottom: 0px; right: 0px; z-index: 11111;" 
+    ng-if="current_page > 1"
+    ng-click="previous()" 
+    ng-if="current_page < (pages.length - 1)">
+    Next &raquo;</a> -->
+    
+  </div>
+  
+</div>
+
+
+</div>
+
+<script type="text/javascript">
+
+ $('#canvas').hide();
+
+
+// Load the HTML4 version if there's not CSS transform
+
+yepnope({
+	test : Modernizr.csstransforms,
+	yep: ['./lib/turn.js'],
+	nope: ['./lib/turn.html4.min.js'],
+	both: ['./lib/zoom.min.js', 'css/magazine-onepage.css'],
+	// complete: loadApp
+});
+
+</script>
+
+</body>
+</html>
