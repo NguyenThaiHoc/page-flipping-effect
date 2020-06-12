@@ -420,14 +420,16 @@ angular.module('todoApp', [])
     }
 
     $scope.$on('$locationChangeSuccess', function(event, newUrl, oldUrl){
+      let new_page = 1;
       if ($location.search().page) {
-        if ($scope.current_page != $location.search().page) {
-          $scope.current_page = parseInt($location.search().page);
-          if ($scope.loaded.includes($scope.current_page)) {
-            $('.magazine').turn('page', $scope.current_page);
-          } else {
-            $window.location.reload();
-          }
+        new_page = parseInt($location.search().page);
+      }
+      if ($scope.current_page != new_page) {
+        $scope.current_page = new_page;
+        if ($scope.loaded.includes($scope.current_page)) {
+          $('.magazine').turn('page', $scope.current_page);
+        } else {
+          $window.location.reload();
         }
       }
       
@@ -495,34 +497,23 @@ angular.module('todoApp', [])
    
          when: {
            turning: function(event, page, view) {
-            //  var book = $(this),
-            //  currentPage = book.turn('page');
-            //  pages = book.turn('pages');
-            var book = $(this);
-
-              // var range = book.turn("range", page);
-              //   for (var i = range[0]; i<=range[1]; i++){
-              //   if (!book.turn("hasPage", i)) {
-              //     $scope.unloaded.push(i)
-              //   }
-              // }
+            if ($(this).turn("hasPage", page)) {
+              $scope.current_page = page;
+              $location.search({'page': $scope.current_page});
+              $timeout(function(){
+                $scope.$apply();
+              },0)
+            }
+            
            },
    
            turned: function(event, page, view) {
 
-             $(this).turn('center');
-   
-             if (page==1) { 
-               $(this).turn('peel', 'br');
-             }
-             let current_page = page;
-             $scope.current_page = current_page;
-              
-              $location.search({'page': current_page});
-              $timeout(function(){
-                $scope.$apply();
-             },0)
-              $scope.getData($(this));
+            $(this).turn('center');
+            if (page==1) { 
+              $(this).turn('peel', 'br');
+            }
+            $scope.getData($(this));
            },
    
            missing: function (event, pages) {
